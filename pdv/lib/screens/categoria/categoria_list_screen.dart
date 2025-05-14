@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import '../../models/PaginatedResponse.dart'; // Novo
 import '../../models/categoria_model.dart';
 import '../../services/categoria_service.dart';
 import '../../widgets/categoria_tile.dart';
 import 'categoria_form_screen.dart';
 
 class CategoriaListScreen extends StatefulWidget {
+  const CategoriaListScreen({Key? key}) : super(key: key);
+
   @override
-  _CategoriaListScreenState createState() => _CategoriaListScreenState();
+  State<CategoriaListScreen> createState() => _CategoriaListScreenState();
 }
 
 class _CategoriaListScreenState extends State<CategoriaListScreen> {
   final CategoriaService _service = CategoriaService();
-  late Future<List<Categoria>> _categorias;
+  int _currentPage = 0;
+  PaginatedResponse<Categoria>? _paginado;
 
   @override
   void initState() {
@@ -19,13 +23,20 @@ class _CategoriaListScreenState extends State<CategoriaListScreen> {
     _carregarCategorias();
   }
 
-  void _carregarCategorias() {
-    setState(() {
-      _categorias = _service.listarCategorias();
-    });
+  Future<void> _carregarCategorias() async {
+    try {
+      final data = await _service.listarCategoriasPaginado(_currentPage);
+      setState(() {
+        _paginado = data;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erro ao carregar categorias')),
+      );
+    }
   }
 
-  void _abrirFormulario({Categoria? categoria}) async {
+  Future<void> _abrirFormulario({Categoria? categoria}) async {
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -37,32 +48,61 @@ class _CategoriaListScreenState extends State<CategoriaListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final categorias = _paginado?.content ?? [];
+
     return Scaffold(
-      appBar: AppBar(title: Text('Categorias')),
-      body: FutureBuilder<List<Categoria>>(
-        future: _categorias,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final categorias = snapshot.data!;
-            return ListView.builder(
+      appBar: AppBar(title: const Text('Categorias')),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
               itemCount: categorias.length,
-              itemBuilder:
-                  (context, index) => CategoriaTile(
-                    categorias[index],
-                    onEdit:
-                        (categoria) => _abrirFormulario(categoria: categoria),
-                    onRefresh: _carregarCategorias,
-                  ),
-            );
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Erro ao carregar${snapshot.error}'));
-          }
-          return Center(child: CircularProgressIndicator());
-        },
+              itemBuilder: (context, index) {
+                final categoria = categorias[index];
+                return CategoriaTile(
+                  categoria,
+                  onEdit: (c) => _abrirFormulario(categoria: c),
+                  onRefresh: _carregarCategorias,
+                );
+              },
+            ),
+          ),
+          if (_paginado != null)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed:
+                      _paginado!.first
+                          ? null
+                          : () {
+                            setState(() {
+                              _currentPage--;
+                            });
+                            _carregarCategorias();
+                          },
+                  child: const Text('Anterior'),
+                ),
+                const SizedBox(width: 16),
+                ElevatedButton(
+                  onPressed:
+                      _paginado!.last
+                          ? null
+                          : () {
+                            setState(() {
+                              _currentPage++;
+                            });
+                            _carregarCategorias();
+                          },
+                  child: const Text('Próxima'),
+                ),
+              ],
+            ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _abrirFormulario(),
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:pdv/models/PaginatedResponse.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/categoria_model.dart';
 
@@ -9,6 +10,30 @@ class CategoriaService {
   Future<String?> _getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('auth_token');
+  }
+
+  Future<PaginatedResponse<Categoria>> listarCategoriasPaginado(
+    int page,
+  ) async {
+    final token = await _getToken();
+
+    final response = await http.get(
+      Uri.parse('$baseUrl?page=$page'),
+      headers: {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return PaginatedResponse<Categoria>.fromJson(
+        json,
+        (item) => Categoria.fromJson(item),
+      );
+    } else {
+      throw Exception('Erro ao carregar categorias');
+    }
   }
 
   Future<List<Categoria>> listarCategorias() async {

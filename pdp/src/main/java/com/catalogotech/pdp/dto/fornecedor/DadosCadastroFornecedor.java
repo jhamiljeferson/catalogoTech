@@ -26,9 +26,6 @@ public record DadosCadastroFornecedor(
         @NotBlank(message = "Endereço é obrigatório")
         String endereco,
 
-        @NotNull(message = "Data é obrigatória")
-        LocalDate data,
-
         @NotNull(message = "Tipo de pessoa é obrigatório")
         TipoPessoa tipoPessoa
 ) {}

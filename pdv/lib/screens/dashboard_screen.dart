@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pdv/screens/categoria/categoria_list_screen.dart';
+import 'package:pdv/screens/fornecedores/fornecedor_list_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:pdv/screens/vendas_screen.dart';
 import '../services/auth_service.dart';
@@ -100,7 +101,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               onTap:
                   () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => RelatoriosScreen()),
+                    MaterialPageRoute(builder: (_) => FornecedorListScreen()),
                   ),
             ),
 

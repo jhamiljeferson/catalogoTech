@@ -42,7 +42,7 @@ public class Fornecedor {
         this.telefone = dados.telefone();
         this.email = dados.email();
         this.endereco = dados.endereco();
-        this.data = dados.data();
+        this.data = LocalDate.now();
         this.tipoPessoa = dados.tipoPessoa();
         this.ativo = true;
     }

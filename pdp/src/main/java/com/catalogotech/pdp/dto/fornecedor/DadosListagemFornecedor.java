@@ -11,6 +11,10 @@ public record DadosListagemFornecedor(
         TipoPessoa tipoPessoa
 ) {
     public DadosListagemFornecedor(Fornecedor fornecedor) {
-        this(fornecedor.getId(), fornecedor.getNome(), fornecedor.getTelefone(), fornecedor.getEmail(), fornecedor.getTipoPessoa());
+        this(   fornecedor.getId(),
+                fornecedor.getNome(),
+                fornecedor.getTelefone(),
+                fornecedor.getEmail(),
+                fornecedor.getTipoPessoa());
     }
 }
