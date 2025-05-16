@@ -68,35 +68,38 @@ class _CategoriaListScreenState extends State<CategoriaListScreen> {
             ),
           ),
           if (_paginado != null)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed:
-                      _paginado!.first
-                          ? null
-                          : () {
-                            setState(() {
-                              _currentPage--;
-                            });
-                            _carregarCategorias();
-                          },
-                  child: const Text('Anterior'),
-                ),
-                const SizedBox(width: 16),
-                ElevatedButton(
-                  onPressed:
-                      _paginado!.last
-                          ? null
-                          : () {
-                            setState(() {
-                              _currentPage++;
-                            });
-                            _carregarCategorias();
-                          },
-                  child: const Text('Próxima'),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Wrap(
+                spacing: 16,
+                alignment: WrapAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed:
+                        _paginado!.first
+                            ? null
+                            : () {
+                              setState(() {
+                                _currentPage--;
+                              });
+                              _carregarCategorias();
+                            },
+                    child: const Text('Anterior'),
+                  ),
+                  ElevatedButton(
+                    onPressed:
+                        _paginado!.last
+                            ? null
+                            : () {
+                              setState(() {
+                                _currentPage++;
+                              });
+                              _carregarCategorias();
+                            },
+                    child: const Text('Próxima'),
+                  ),
+                ],
+              ),
             ),
         ],
       ),

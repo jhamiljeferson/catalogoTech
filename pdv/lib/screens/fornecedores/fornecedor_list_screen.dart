@@ -83,31 +83,34 @@ class _FornecedorListScreenState extends State<FornecedorListScreen> {
             ),
           ),
           if (_paginado != null)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed:
-                      _paginado!.first
-                          ? null
-                          : () {
-                            setState(() => _currentPage--);
-                            _carregarFornecedores();
-                          },
-                  child: const Text('Anterior'),
-                ),
-                const SizedBox(width: 16),
-                ElevatedButton(
-                  onPressed:
-                      _paginado!.last
-                          ? null
-                          : () {
-                            setState(() => _currentPage++);
-                            _carregarFornecedores();
-                          },
-                  child: const Text('Próxima'),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Wrap(
+                spacing: 16,
+                alignment: WrapAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed:
+                        _paginado!.first
+                            ? null
+                            : () {
+                              setState(() => _currentPage--);
+                              _carregarFornecedores();
+                            },
+                    child: const Text('Anterior'),
+                  ),
+                  ElevatedButton(
+                    onPressed:
+                        _paginado!.last
+                            ? null
+                            : () {
+                              setState(() => _currentPage++);
+                              _carregarFornecedores();
+                            },
+                    child: const Text('Próxima'),
+                  ),
+                ],
+              ),
             ),
         ],
       ),

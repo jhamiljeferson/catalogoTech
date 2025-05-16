@@ -19,11 +19,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'PDV App',
       theme: ThemeData(primarySwatch: Colors.indigo),
-      home: Consumer<AuthService>(
-        builder: (context, auth, _) {
-          return auth.token == null ? LoginScreen() : DashboardScreen();
-        },
-      ),
+      initialRoute: '/',
+      routes: {
+        '/':
+            (context) => Consumer<AuthService>(
+              builder: (context, auth, _) {
+                return auth.token == null ? LoginScreen() : DashboardScreen();
+              },
+            ),
+        '/login': (context) => LoginScreen(),
+        '/dashboard': (context) => DashboardScreen(),
+        // Adicione outras rotas conforme necessário
+      },
     );
   }
 }

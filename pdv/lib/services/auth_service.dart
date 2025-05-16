@@ -2,31 +2,45 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/task.dart';
 
 class AuthService with ChangeNotifier {
   String? _token;
-  List<Task> _tasks = [];
+  DateTime? _tokenExpirationDate;
 
   String? get token => _token;
-  List<Task> get tasks => _tasks;
 
-  Future<void> saveToken(String token) async {
+  Future<void> saveToken(String token, DateTime expirationDate) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('auth_token', token);
+    await prefs.setString('token_expiration', expirationDate.toIso8601String());
   }
 
   Future<void> loadToken() async {
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('auth_token');
+    final expiration = prefs.getString('token_expiration');
+    if (expiration != null) {
+      _tokenExpirationDate = DateTime.parse(expiration);
+    }
+
+    // Verifica se o token expirou
+    if (_token != null &&
+        _tokenExpirationDate != null &&
+        _tokenExpirationDate!.isBefore(DateTime.now())) {
+      _token = null; // Limpa o token se ele expirou
+      _tokenExpirationDate = null;
+      await logout();
+    }
+
     notifyListeners();
   }
 
   Future<void> logout() async {
     _token = null;
-    _tasks = [];
+    _tokenExpirationDate = null;
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('auth_token');
+    await prefs.remove('token_expiration');
     notifyListeners();
   }
 
@@ -40,7 +54,11 @@ class AuthService with ChangeNotifier {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       _token = data['token'];
-      await saveToken(_token!);
+      final expirationDate = DateTime.now().add(
+        Duration(hours: 3),
+      ); // 3 horas de duração do token
+      _tokenExpirationDate = expirationDate;
+      await saveToken(_token!, expirationDate);
       notifyListeners();
       return true;
     }

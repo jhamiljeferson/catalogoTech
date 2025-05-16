@@ -13,6 +13,13 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  Future<void> _logoutAndRedirect(BuildContext context) async {
+    await AuthService().logout();
+    Navigator.pushReplacementNamed(
+      context,
+      '/login',
+    ); // Redireciona para a tela de login
+  }
 
   void _openDrawer() {
     _scaffoldKey.currentState?.openDrawer();
@@ -252,7 +259,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () async {
-              await auth.logout();
+              await _logoutAndRedirect(context); // Chama a função de logout
             },
           ),
         ],

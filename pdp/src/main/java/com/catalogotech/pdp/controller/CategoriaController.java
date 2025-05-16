@@ -26,11 +26,17 @@ public class CategoriaController {
     @PostMapping
     public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroCategoria dados, UriComponentsBuilder uriBuilder) {
         var categoria = service.cadastrar(dados, uriBuilder);
+        System.out.println("-----POST--------Recebido: " + dados.nome());
         return ResponseEntity.created(categoria.uri()).body(categoria.dados());
+
     }
 
     @GetMapping
     public ResponseEntity<Page<DadosListagemCategoria>> listar(@PageableDefault(size = 10, sort = "nome") Pageable pageable) {
+        Page<DadosListagemCategoria> resultado = service.listar(pageable);
+
+        System.out.println("---GET----------Lista recebida:");
+        resultado.getContent().forEach(System.out::println);
         return ResponseEntity.ok(service.listar(pageable));
     }
 

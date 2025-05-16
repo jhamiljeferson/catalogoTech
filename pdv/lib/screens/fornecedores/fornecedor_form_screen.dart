@@ -27,50 +27,78 @@ class _FornecedorFormScreenState extends State<FornecedorFormScreen> {
 
   final FornecedorService _service = FornecedorService();
 
+  static const String campoObrigatorio = 'Campo obrigatório';
+  static const String erroSalvar = 'Erro ao salvar fornecedor';
+
   @override
   void initState() {
     super.initState();
     if (widget.fornecedor != null) {
-      final f = widget.fornecedor!;
-      _nomeController.text = f.nome;
-      _cpfController.text = f.cpf ?? '';
-      _emailController.text = f.email ?? '';
-      _telefoneController.text = f.telefone ?? '';
-      _enderecoController.text = f.endereco ?? '';
-      _tipoPessoa = f.tipoPessoa;
+      _preencherCampos(widget.fornecedor!);
     }
+  }
+
+  void _preencherCampos(FornecedorDetalhamentoDto fornecedor) {
+    _nomeController.text = fornecedor.nome;
+    _cpfController.text = fornecedor.cpf ?? '';
+    _emailController.text = fornecedor.email ?? '';
+    _telefoneController.text = fornecedor.telefone ?? '';
+    _enderecoController.text = fornecedor.endereco ?? '';
+    _tipoPessoa = fornecedor.tipoPessoa;
   }
 
   void _salvar() async {
     if (_formKey.currentState!.validate()) {
       try {
         if (widget.fornecedor == null) {
-          final novo = FornecedorCadastroDto(
-            nome: _nomeController.text,
-            cpf: _cpfController.text,
-            email: _emailController.text,
-            telefone: _telefoneController.text,
-            endereco: _enderecoController.text,
-            tipoPessoa: _tipoPessoa,
-          );
-          await _service.cadastrar(novo);
+          await _cadastrarFornecedor();
         } else {
-          final atualizado = FornecedorAtualizacaoDto(
-            nome: _nomeController.text,
-            email: _emailController.text,
-            telefone: _telefoneController.text,
-            endereco: _enderecoController.text,
-          );
-          await _service.atualizar(widget.fornecedor!.id, atualizado);
+          await _atualizarFornecedor();
         }
-
         Navigator.pop(context);
       } catch (_) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Erro ao salvar fornecedor')));
+        _exibirMensagemErro();
       }
     }
+  }
+
+  Future<void> _cadastrarFornecedor() async {
+    final novo = FornecedorCadastroDto(
+      nome: _nomeController.text,
+      cpf: _cpfController.text,
+      email: _emailController.text,
+      telefone: _telefoneController.text,
+      endereco: _enderecoController.text,
+      tipoPessoa: _tipoPessoa,
+    );
+    await _service.cadastrar(novo);
+  }
+
+  Future<void> _atualizarFornecedor() async {
+    final atualizado = FornecedorAtualizacaoDto(
+      nome: _nomeController.text,
+      email: _emailController.text,
+      telefone: _telefoneController.text,
+      endereco: _enderecoController.text,
+    );
+    await _service.atualizar(widget.fornecedor!.id, atualizado);
+  }
+
+  void _exibirMensagemErro() {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(erroSalvar)));
+  }
+
+  String? _validarCampoObrigatorio(String? value) {
+    return (value == null || value.isEmpty) ? campoObrigatorio : null;
+  }
+
+  String? _validarCpfCnpj(String? value) {
+    final regexCpfCnpj = RegExp(r'^\d{11}$|^\d{14}$');
+    return (value != null && !regexCpfCnpj.hasMatch(value))
+        ? 'CPF/CNPJ inválido'
+        : null;
   }
 
   @override
@@ -87,54 +115,71 @@ class _FornecedorFormScreenState extends State<FornecedorFormScreen> {
           key: _formKey,
           child: ListView(
             children: [
-              TextFormField(
-                controller: _nomeController,
-                decoration: InputDecoration(labelText: 'Nome'),
-                validator:
-                    (value) =>
-                        value == null || value.isEmpty
-                            ? 'Campo obrigatório'
-                            : null,
+              _buildTextFormField(
+                _nomeController,
+                'Nome',
+                _validarCampoObrigatorio,
               ),
-              TextFormField(
-                controller: _cpfController,
-                decoration: InputDecoration(labelText: 'CPF/CNPJ'),
+              _buildTextFormField(_cpfController, 'CPF/CNPJ', _validarCpfCnpj),
+              _buildTextFormField(
+                _emailController,
+                'Email',
+                _validarCampoObrigatorio,
               ),
-              TextFormField(
-                controller: _emailController,
-                decoration: InputDecoration(labelText: 'Email'),
+              _buildTextFormField(
+                _telefoneController,
+                'Telefone',
+                _validarCampoObrigatorio,
               ),
-              TextFormField(
-                controller: _telefoneController,
-                decoration: InputDecoration(labelText: 'Telefone'),
+              _buildTextFormField(
+                _enderecoController,
+                'Endereço',
+                _validarCampoObrigatorio,
               ),
-              TextFormField(
-                controller: _enderecoController,
-                decoration: InputDecoration(labelText: 'Endereço'),
-              ),
-              DropdownButtonFormField<TipoPessoa>(
-                value: _tipoPessoa,
-                items:
-                    TipoPessoa.values
-                        .map(
-                          (e) =>
-                              DropdownMenuItem(value: e, child: Text(e.name)),
-                        )
-                        .toList(),
-                onChanged: (val) => setState(() => _tipoPessoa = val!),
-                decoration: InputDecoration(labelText: 'Tipo Pessoa'),
-              ),
-              SwitchListTile(
-                title: Text('Ativo'),
-                value: _ativo,
-                onChanged: (val) => setState(() => _ativo = val),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(onPressed: _salvar, child: Text('Salvar')),
+              _buildDropdownTipoPessoa(),
+              _buildSwitchAtivo(),
+              const SizedBox(height: 20),
+              _buildSalvarButton(),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildTextFormField(
+    TextEditingController controller,
+    String label,
+    String? Function(String?)? validator,
+  ) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(labelText: label),
+      validator: validator,
+    );
+  }
+
+  Widget _buildDropdownTipoPessoa() {
+    return DropdownButtonFormField<TipoPessoa>(
+      value: _tipoPessoa,
+      items:
+          TipoPessoa.values
+              .map((e) => DropdownMenuItem(value: e, child: Text(e.name)))
+              .toList(),
+      onChanged: (val) => setState(() => _tipoPessoa = val!),
+      decoration: const InputDecoration(labelText: 'Tipo Pessoa'),
+    );
+  }
+
+  Widget _buildSwitchAtivo() {
+    return SwitchListTile(
+      title: const Text('Ativo'),
+      value: _ativo,
+      onChanged: (val) => setState(() => _ativo = val),
+    );
+  }
+
+  Widget _buildSalvarButton() {
+    return ElevatedButton(onPressed: _salvar, child: const Text('Salvar'));
   }
 }

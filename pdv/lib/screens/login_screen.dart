@@ -24,7 +24,12 @@ class _LoginScreenState extends State<LoginScreen> {
       _passwordController.text,
     );
     setState(() => _loading = false);
-    if (!success) {
+    if (success) {
+      Navigator.pushReplacementNamed(
+        context,
+        '/dashboard',
+      ); // Redireciona para o Dashboard
+    } else {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("Login falhou!")));
