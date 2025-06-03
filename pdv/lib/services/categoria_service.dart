@@ -5,7 +5,7 @@ import '../models/PaginatedResponse.dart';
 import '../models/categoria_model.dart';
 
 class CategoriaService {
-  static const String baseUrl = 'http://localhost:9191/categorias';
+  static const String baseUrl = 'http://192.168.0.8:9191/categorias';
 
   // Verifica o token armazenado
   Future<String?> _getToken() async {

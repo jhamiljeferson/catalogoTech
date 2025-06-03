@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../services/auth_service.dart';
-import 'register_screen.dart'; // certifique-se de que o caminho está correto
+import 'package:pdv/services/auth_service.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -13,22 +13,18 @@ class _LoginScreenState extends State<LoginScreen> {
     text: "joao.silva@example.com",
   );
   final _passwordController = TextEditingController(text: "123456");
-
   bool _loading = false;
 
   Future<void> _login() async {
     setState(() => _loading = true);
     final auth = Provider.of<AuthService>(context, listen: false);
-    bool success = await auth.login(
+    final success = await auth.login(
       _emailController.text,
       _passwordController.text,
     );
     setState(() => _loading = false);
     if (success) {
-      Navigator.pushReplacementNamed(
-        context,
-        '/dashboard',
-      ); // Redireciona para o Dashboard
+      context.go('/dashboard'); // <- Redirecionamento com go_router
     } else {
       ScaffoldMessenger.of(
         context,
@@ -51,19 +47,15 @@ class _LoginScreenState extends State<LoginScreen> {
             TextField(
               controller: _passwordController,
               decoration: InputDecoration(labelText: "Senha"),
-              obscureText: false,
+              obscureText: true,
             ),
             SizedBox(height: 20),
             _loading
                 ? CircularProgressIndicator()
                 : ElevatedButton(onPressed: _login, child: Text("Entrar")),
-            SizedBox(height: 12),
             TextButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => RegisterScreen()),
-                );
+                // pode futuramente usar `context.go('/register')`
               },
               child: Text("Não tem conta? Cadastre-se"),
             ),

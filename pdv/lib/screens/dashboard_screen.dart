@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pdv/screens/categoria/categoria_list_screen.dart';
-import 'package:pdv/screens/fornecedores/fornecedor_list_screen.dart';
-import 'package:provider/provider.dart';
 import 'package:pdv/screens/vendas_screen.dart';
 import '../services/auth_service.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -13,12 +12,13 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  Future<void> _logoutAndRedirect(BuildContext context) async {
-    await AuthService().logout();
-    Navigator.pushReplacementNamed(
-      context,
-      '/login',
-    ); // Redireciona para a tela de login
+
+  Future<void> _logout(BuildContext context) async {
+    final auth = Provider.of<AuthService>(context, listen: false);
+    await auth.logout();
+    if (mounted) {
+      context.go('/login');
+    }
   }
 
   void _openDrawer() {
@@ -27,7 +27,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthService>(context, listen: false);
+    //final auth = Provider.of<AuthService>(context, listen: false);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -96,20 +96,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ListTile(
               leading: Icon(Icons.category),
               title: Text('Categorias'),
-              onTap:
-                  () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => CategoriaListScreen()),
-                  ),
+              onTap: () => context.go('/dashboard/categorias'),
             ),
             ListTile(
               leading: Icon(Icons.store),
               title: Text('Fornecedores'),
-              onTap:
-                  () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => FornecedorListScreen()),
-                  ),
+              onTap: () => context.go('/dashboard/fornecedores'),
             ),
 
             Divider(),
@@ -248,6 +240,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     MaterialPageRoute(builder: (_) => ConfigScreen()),
                   ),
             ),
+            ListTile(
+              leading: Icon(Icons.exit_to_app),
+              title: Text('Sair'),
+              onTap: () => _logout(context),
+            ),
           ],
         ),
       ),
@@ -259,7 +256,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () async {
-              await _logoutAndRedirect(context); // Chama a função de logout
+              bool confirm = await showDialog(
+                context: context,
+                builder:
+                    (_) => AlertDialog(
+                      title: Text('Sair'),
+                      content: Text('Deseja realmente sair?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, false),
+                          child: Text('Cancelar'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, true),
+                          child: Text('Sair'),
+                        ),
+                      ],
+                    ),
+              );
+
+              if (confirm) await _logout(context);
             },
           ),
         ],
