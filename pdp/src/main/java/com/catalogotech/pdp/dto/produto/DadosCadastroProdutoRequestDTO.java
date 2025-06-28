@@ -1,10 +1,11 @@
 package com.catalogotech.pdp.dto.produto;
 
-import com.catalogotech.pdp.dto.Variacao.VariacaoRequestDTO;
+
+import com.catalogotech.pdp.dto.Variacao.reaproveitar.DadosCadastroVariacaoRequestDTO;
 
 import java.util.List;
 
-public record ProdutoRequestDTO(
+public record DadosCadastroProdutoRequestDTO(
         String nome,
         String descricao,
         String codigo,
@@ -13,6 +14,6 @@ public record ProdutoRequestDTO(
         String foto,
         List<String> cores,
         List<String> tamanhos,
-        List<VariacaoRequestDTO> variacoes
+        List<DadosCadastroVariacaoRequestDTO> variacoes
 ) {}
 

@@ -1,7 +1,5 @@
 package com.catalogotech.pdp.dto.produto;
 
-import com.catalogotech.pdp.domain.Categoria.Categoria;
-import com.catalogotech.pdp.domain.Fornecedor.Fornecedor;
 import com.catalogotech.pdp.domain.Produto.Produto;
 
 import java.time.LocalDate;
@@ -14,8 +12,9 @@ public record DadosDetalhamentoProduto(
         String foto,
         LocalDate data,
         Boolean ativo,
-        Categoria categoria,
-        Fornecedor fornecedor
+        String categoria,
+        String fornecedor,
+        Integer quantidadeVariacoes
 ) {
     public DadosDetalhamentoProduto(Produto produto) {
         this(
@@ -26,8 +25,9 @@ public record DadosDetalhamentoProduto(
                 produto.getFoto(),
                 produto.getData(),
                 produto.getAtivo(),
-                produto.getCategoria(),
-                produto.getFornecedor()
+                produto.getCategoria() != null ? produto.getCategoria().getNome() : null,
+                produto.getFornecedor() != null ? produto.getFornecedor().getNome() : null,
+                produto.getVariacoes() != null ? produto.getVariacoes().size() : 0
         );
     }
 }

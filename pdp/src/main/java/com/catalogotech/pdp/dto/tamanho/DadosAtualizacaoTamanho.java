@@ -1,8 +1,8 @@
 package com.catalogotech.pdp.dto.tamanho;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 public record DadosAtualizacaoTamanho(
-        @NotNull(message = "O Nome do tamanho é obrigatório.")
+        @NotBlank(message = "O nome do tamanho é obrigatório.")
         String nome
 ) {}

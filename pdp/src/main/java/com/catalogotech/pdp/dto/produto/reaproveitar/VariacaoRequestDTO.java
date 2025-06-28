@@ -1,7 +1,7 @@
-package com.catalogotech.pdp.dto.Variacao;
+package com.catalogotech.pdp.dto.produto.reaproveitar;
 
 import java.math.BigDecimal;
-
+/*
 public record VariacaoRequestDTO(
         String cor,
         String tamanho,
@@ -11,4 +11,4 @@ public record VariacaoRequestDTO(
         BigDecimal valorAtacado,
         BigDecimal lucro,
         String sku
-) {}
+) {} */

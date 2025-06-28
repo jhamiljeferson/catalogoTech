@@ -1,15 +1,11 @@
 package com.catalogotech.pdp.domain.Cor;
 
-import com.catalogotech.pdp.domain.Produto.Produto;
-import com.catalogotech.pdp.domain.Tamanho.Tamanho;
 import com.catalogotech.pdp.dto.cor.DadosAtualizacaoCor;
 import com.catalogotech.pdp.dto.cor.DadosCadastroCor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
 
 @Entity
 @Data
@@ -23,7 +19,7 @@ public class Cor {
 
     private String nome;
 
-    private Boolean ativo;
+    private Boolean ativo=true;
 
     public Cor(DadosCadastroCor dados) {
         this.nome = dados.nome();
@@ -39,10 +35,15 @@ public class Cor {
     public void excluir() {
         this.ativo = false;
     }
+    public void ativar() {
+        this.ativo = true;
+    }
+
     public Cor(Long id) {
         this.id = id;
     }
     public Cor(String nome) {
         this.nome = nome;
     }
+   
 }

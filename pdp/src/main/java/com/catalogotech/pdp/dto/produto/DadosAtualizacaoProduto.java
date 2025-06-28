@@ -1,22 +1,17 @@
 package com.catalogotech.pdp.dto.produto;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public record DadosAtualizacaoProduto(
-
-        @NotNull(message = "O ID é obrigatório para atualização")
-        Long id,
-
-        @NotNull(message = "O Nome é obrigatório para atualização")
+        @Size(min = 2, max = 100, message = "O nome deve ter entre 2 e 100 caracteres")
         String nome,
 
-        @NotNull(message = "A Descrição é obrigatório para atualização")
+        @Size(max = 500, message = "A descrição deve ter no máximo 500 caracteres")
         String descricao,
 
         String foto,
-        @NotNull(message = "O ID da categoria é obrigatório")
+        
         Long categoriaId,
 
-        @NotNull(message = "O ID do fornecedor é obrigatório")
         Long fornecedorId
 ) {}

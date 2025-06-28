@@ -5,6 +5,7 @@ import com.catalogotech.pdp.domain.Fornecedor.Fornecedor;
 import com.catalogotech.pdp.domain.Variacao.Variacao;
 import com.catalogotech.pdp.dto.produto.DadosAtualizacaoProduto;
 import com.catalogotech.pdp.dto.produto.DadosCadastroProduto;
+import com.catalogotech.pdp.dto.produto.DadosCadastroProdutoRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,6 +45,17 @@ public class Produto {
     private List<Variacao> variacoes = new ArrayList<>();
 
     public Produto(DadosCadastroProduto dados, Categoria categoria, Fornecedor fornecedor) {
+        this.codigo = dados.codigo();
+        this.nome = dados.nome();
+        this.descricao = dados.descricao();
+        this.foto = dados.foto();
+        this.categoria = categoria;
+        this.fornecedor = fornecedor;
+        this.data = LocalDate.now();
+        this.ativo = true;
+    }
+
+    public Produto(DadosCadastroProdutoRequestDTO dados, Categoria categoria, Fornecedor fornecedor) {
         this.codigo = dados.codigo();
         this.nome = dados.nome();
         this.descricao = dados.descricao();

@@ -6,12 +6,14 @@ import jakarta.validation.constraints.Size;
 
 public record DadosCadastroProduto(
         @NotBlank(message = "O código é obrigatório")
+        @Size(min = 3, max = 50, message = "O código deve ter entre 3 e 50 caracteres")
         String codigo,
 
         @NotBlank(message = "O nome é obrigatório")
+        @Size(min = 2, max = 100, message = "O nome deve ter entre 2 e 100 caracteres")
         String nome,
 
-        @Size(max = 255, message = "A descrição deve ter no máximo 255 caracteres")
+        @Size(max = 500, message = "A descrição deve ter no máximo 500 caracteres")
         String descricao,
 
         String foto,

@@ -4,6 +4,13 @@ import '../services/auth_service.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pdv/screens/categoria/categoria_list_screen.dart';
+import 'package:pdv/screens/cores/cores_screen.dart';
+import 'package:pdv/screens/fornecedores/fornecedor_list_screen.dart';
+import 'package:pdv/screens/login_screen.dart';
+import 'package:pdv/screens/produtos/produto_list_screen.dart';
+import 'package:pdv/screens/tamanhos/tamanhos_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -60,38 +67,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ListTile(
               leading: Icon(Icons.inventory),
               title: Text('Produtos'),
-              onTap:
-                  () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => ProdutosScreen()),
-                  ),
+              onTap: () => context.go('/dashboard/produtos'),
             ),
             ListTile(
               leading: Icon(Icons.widgets),
               title: Text('Variações'),
-              onTap:
-                  () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => VariacoesScreen()),
-                  ),
+              onTap: () => context.go('/dashboard/variacoes'),
             ),
             ListTile(
               leading: Icon(Icons.color_lens),
               title: Text('Cores'),
-              onTap:
-                  () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => RelatoriosScreen()),
-                  ),
+              onTap: () => context.go('/dashboard/cores'),
             ),
             ListTile(
               leading: Icon(Icons.format_size),
               title: Text('Tamanhos'),
-              onTap:
-                  () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => RelatoriosScreen()),
-                  ),
+              onTap: () => context.go('/dashboard/tamanhos'),
             ),
             ListTile(
               leading: Icon(Icons.category),
@@ -429,15 +420,6 @@ class _InfoCard extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class ProdutosScreen extends StatelessWidget {
-  const ProdutosScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }
 

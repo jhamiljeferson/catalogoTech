@@ -5,6 +5,7 @@ import com.catalogotech.pdp.domain.Produto.Produto;
 import com.catalogotech.pdp.domain.Tamanho.Tamanho;
 import com.catalogotech.pdp.dto.Variacao.DadosAtualizacaoVariacao;
 import com.catalogotech.pdp.dto.Variacao.DadosCadastroVariacao;
+import com.catalogotech.pdp.dto.Variacao.reaproveitar.DadosCadastroVariacaoRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,11 +45,10 @@ public class Variacao {
     private Tamanho tamanho;
 
     private Boolean ativo;
-
+/*
     public Variacao(DadosCadastroVariacao dados) {
-        this.produto = new Produto(dados.produtoId());
-        this.cor = new Cor(dados.corId());
-        this.tamanho = new Tamanho(dados.tamanhoId());
+        this.cor = new Cor(dados.cor());
+        this.tamanho = new Tamanho(dados.tamanho());
         this.quantidade = dados.quantidade();
         this.valorVenda = dados.valorVenda();
         this.valorCompra = dados.valorCompra();
@@ -58,7 +58,19 @@ public class Variacao {
         this.sku = dados.sku();
         this.ativo = true;
     }
-
+*/
+    public Variacao(Produto produto, Cor cor, Tamanho tamanho, DadosCadastroVariacaoRequestDTO dados) {
+        this.produto = produto;
+        this.cor = cor;
+        this.tamanho = tamanho;
+        this.quantidade = dados.quantidade();
+        this.valorVenda = dados.preco();
+        this.valorCompra = dados.valorCompra();
+        this.valorAtacado = dados.valorAtacado();
+        this.lucro = dados.lucro();
+        this.sku = dados.sku();
+        this.ativo = true;
+    }
 
     public void atualizar(DadosAtualizacaoVariacao dados) {
         if (dados.quantidade() != null) this.quantidade = dados.quantidade();

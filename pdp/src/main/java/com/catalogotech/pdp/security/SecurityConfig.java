@@ -33,11 +33,11 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(request -> {
                     var configuration = new org.springframework.web.cors.CorsConfiguration();
 
-                    configuration.setAllowedOrigins(List.of("http://localhost:50000")); // Porta do seu Flutter Web
+                    configuration.setAllowedOrigins(List.of("*"/*"http://localhost:50000"*/)); // Porta do seu Flutter Web
                     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                    configuration.setAllowedHeaders(List.of("Content-Type", "Authorization"));
+                    configuration.setAllowedHeaders(List.of("*"/*"Content-Type", "Authorization"*/));
                     configuration.setExposedHeaders(List.of("Authorization")); // se for necessário ler o token
-                    //configuration.setAllowCredentials(false); // importante se estiver usando auth
+                    configuration.setAllowCredentials(false); // importante se estiver usando auth
 
                     return configuration;
                 }))

@@ -19,7 +19,7 @@ public class Tamanho {
 
     private String nome;
 
-    private Boolean ativo;
+    private Boolean ativo=true;
 
     public Tamanho(DadosCadastroTamanho dados) {
         this.nome = dados.nome();
@@ -35,9 +35,15 @@ public class Tamanho {
     public void excluir() {
         this.ativo = false;
     }
+
+    public void ativar() {
+        this.ativo = true;
+    }
+
     public Tamanho(Long id) {
         this.id = id;
     }
+    
     public Tamanho(String nome) {
         this.nome = nome;
     }
